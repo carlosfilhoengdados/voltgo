@@ -9,19 +9,12 @@ import ProfilePage from "@/pages/profile-page";
 import FavoritesPage from "@/pages/favorites-page";
 import PromotionsPage from "@/pages/promotions-page";
 import StationRegistrationPage from "@/pages/station-registration-page";
-import { useAuth, AuthProvider } from "./hooks/use-auth";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "./lib/queryClient";
+import { AuthProvider } from "./hooks/use-auth";
+import { Loader2 } from "lucide-react";
 
 function Router() {
-  const { isLoading } = useAuth();
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-      </div>
-    );
-  }
-
   return (
     <Switch>
       <Route path="/auth" component={AuthPage} />
@@ -37,12 +30,14 @@ function Router() {
 
 function App() {
   return (
-    <TooltipProvider>
-      <Toaster />
-      <AuthProvider>
-        <Router />
-      </AuthProvider>
-    </TooltipProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <AuthProvider>
+          <Router />
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 

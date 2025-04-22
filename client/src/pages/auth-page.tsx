@@ -35,10 +35,10 @@ export default function AuthPage() {
 
   // Redirect if already logged in
   useEffect(() => {
-    if (user) {
+    if (user && !loginMutation.isPending && !registerMutation.isPending) {
       navigate("/");
     }
-  }, [user, navigate]);
+  }, [user, navigate, loginMutation.isPending, registerMutation.isPending]);
 
   // Login form
   const loginForm = useForm<z.infer<typeof loginSchema>>({

@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Login bem-sucedido",
-        description: `Bem-vindo(a) de volta, ${user.name}!`,
+        description: `Bem-vindo(a) de volta${user.name ? ', ' + user.name : ''}!`,
       });
     },
     onError: (error: Error) => {
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       queryClient.setQueryData(["/api/user"], user);
       toast({
         title: "Registro bem-sucedido",
-        description: `Bem-vindo(a) ao VoltGo, ${user.name}!`,
+        description: `Bem-vindo(a) ao VoltGo${user.name ? ', ' + user.name : ''}!`,
       });
     },
     onError: (error: Error) => {
