@@ -7,33 +7,34 @@ import L from "leaflet";
  * @returns Leaflet DivIcon
  */
 export function createStationIcon(status: string, isSelected: boolean = false): L.DivIcon {
-  let bgColor = 'white';
-  let iconColor = 'text-primary-600';
-  let borderColor = 'border-gray-200';
-  let scale = isSelected ? 'scale-125' : 'scale-100';
+  let mainColor = '#4285F4'; // Google Maps blue
+  let zIndex = isSelected ? '999' : '1';
   
   if (status === 'available') {
-    iconColor = 'text-green-600';
-    borderColor = isSelected ? 'border-green-500' : 'border-gray-200';
+    mainColor = '#34A853'; // Google Maps green
   } else if (status === 'busy') {
-    iconColor = 'text-yellow-600';
-    borderColor = isSelected ? 'border-yellow-500' : 'border-gray-200';
+    mainColor = '#FBBC05'; // Google Maps yellow
   } else if (status === 'offline') {
-    iconColor = 'text-red-600';
-    borderColor = isSelected ? 'border-red-500' : 'border-gray-200';
+    mainColor = '#EA4335'; // Google Maps red
   }
   
+  // Create a Google Maps style marker pin
   const html = `
-    <div class="w-8 h-8 bg-${bgColor} rounded-full flex items-center justify-center shadow-md border-2 ${borderColor} ${scale} transition-transform duration-200">
-      <i class="fas fa-charging-station ${iconColor}"></i>
+    <div style="position: relative; z-index: ${zIndex}; transform: ${isSelected ? 'scale(1.2)' : 'scale(1)'}; transform-origin: bottom center; transition: transform 0.2s;">
+      <div style="width: 24px; height: 36px; background-color: ${mainColor}; border-radius: 12px 12px 0 12px; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">
+        <div style="position: absolute; top: 8px; left: 5px; width: 14px; height: 14px; background-color: white; border-radius: 7px; display: flex; align-items: center; justify-content: center;">
+          <i class="fas fa-bolt" style="color: ${mainColor}; font-size: 8px;"></i>
+        </div>
+        <div style="position: absolute; bottom: -8px; left: 12px; transform: rotate(45deg); width: 16px; height: 16px; background-color: ${mainColor};"></div>
+      </div>
     </div>
   `;
   
   return L.divIcon({
     html,
     className: '',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16]
+    iconSize: [24, 36],
+    iconAnchor: [12, 36]
   });
 }
 

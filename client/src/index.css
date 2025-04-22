@@ -123,9 +123,42 @@
   @apply absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 rounded-full bg-primary;
 }
 
-/* Map styles */
+/* Map styles with Google Maps look */
 .map-container {
   @apply h-full w-full rounded-xl overflow-hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* Google Maps style overrides for Leaflet */
+.leaflet-container {
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.leaflet-control-attribution {
+  font-size: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0 5px;
+  color: #666;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.3);
+}
+
+.leaflet-popup-tip {
+  box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Google Maps style tooltips */
+.leaflet-tooltip {
+  background-color: white;
+  border: none;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 13px;
+  padding: 6px 10px;
 }
 
 /* Custom scrollbar */

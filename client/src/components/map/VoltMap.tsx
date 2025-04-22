@@ -49,16 +49,22 @@ const VoltMap = forwardRef<VoltMapRef, VoltMapProps>(({ stations, onStationClick
     // Default location (São Paulo)
     const defaultLocation: [number, number] = [-23.5505, -46.6333];
     
-    // Create map
+    // Create map with Google Maps style options
     const map = L.map(mapContainerRef.current, {
       center: defaultLocation,
       zoom: 13,
-      zoomControl: false // We'll add custom zoom controls
+      zoomControl: false, // We'll add custom zoom controls
+      zoomSnap: 0.5,
+      zoomDelta: 0.5,
+      doubleClickZoom: true,
+      scrollWheelZoom: true
     });
 
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    // Add Google Maps style tile layer
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+      attribution: '&copy; Google Maps'
     }).addTo(map);
 
     // Try to get user's current location
@@ -90,10 +96,27 @@ const VoltMap = forwardRef<VoltMapRef, VoltMapProps>(({ stations, onStationClick
 
     const userMarker = L.marker(userLocation, {
       icon: L.divIcon({
-        html: '<div class="w-6 h-6 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center"><div class="w-2 h-2 bg-white rounded-full"></div></div>',
+        html: `
+          <div style="position: relative;">
+            <!-- Google Maps blue dot with pulsing effect -->
+            <div style="width: 16px; height: 16px; background-color: #4285F4; border-radius: 50%; position: relative; box-shadow: 0 0 0 4px rgba(66, 133, 244, 0.3);">
+              <!-- Inner white dot -->
+              <div style="position: absolute; top: 4px; left: 4px; width: 8px; height: 8px; background-color: white; border-radius: 50%;"></div>
+            </div>
+            <!-- Pulsing animation -->
+            <div style="position: absolute; top: -8px; left: -8px; width: 32px; height: 32px; border-radius: 50%; background-color: rgba(66, 133, 244, 0.15); opacity: 0.7; animation: pulse 2s infinite;"></div>
+          </div>
+          <style>
+            @keyframes pulse {
+              0% { transform: scale(0.5); opacity: 0.7; }
+              50% { transform: scale(1); opacity: 0.3; }
+              100% { transform: scale(0.5); opacity: 0.7; }
+            }
+          </style>
+        `,
         className: '',
-        iconSize: [24, 24],
-        iconAnchor: [12, 12]
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
       })
     }).addTo(mapRef.current);
 
