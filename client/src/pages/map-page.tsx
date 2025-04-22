@@ -19,6 +19,7 @@ export default function MapPage() {
   const [selectedStation, setSelectedStation] = useState<Station | null>(null);
   const [showDetailOnMobile, setShowDetailOnMobile] = useState(false);
   const [viewMode, setViewMode] = useState<"list" | "map">("list");
+  const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState({
     status: ["available"],
     connectorTypes: [],
@@ -40,6 +41,30 @@ export default function MapPage() {
 
   const handleFilterChange = (newFilters: any) => {
     setFilters(newFilters);
+  };
+  
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // Aqui você pode implementar a lógica de busca por eletropostos ou endereços
+    console.log("Searching for:", query);
+    
+    // Exemplo: buscar por nome da estação
+    if (query && stations) {
+      // Buscar estação pelo nome
+      const foundStation = stations.find(station => 
+        station.name.toLowerCase().includes(query.toLowerCase()) ||
+        station.address.toLowerCase().includes(query.toLowerCase())
+      );
+      
+      if (foundStation) {
+        setSelectedStation(foundStation);
+        
+        // Centralizar o mapa na estação encontrada
+        if (mapRef.current) {
+          mapRef.current.setView([foundStation.lat, foundStation.lng], 15);
+        }
+      }
+    }
   };
 
   const handleZoomIn = () => {
@@ -74,7 +99,7 @@ export default function MapPage() {
 
   return (
     <div className="flex flex-col h-screen">
-      <Header />
+      <Header onSearch={handleSearch} />
       
       <main className="flex-1 overflow-hidden flex flex-col md:flex-row">
         {/* Sidebar for filters and station list */}

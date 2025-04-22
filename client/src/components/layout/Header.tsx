@@ -31,12 +31,12 @@ export default function Header({ onSearch }: { onSearch?: (query: string) => voi
       <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/">
-          <a className="flex items-center space-x-1">
+          <div className="flex items-center space-x-1 cursor-pointer">
             <div className="h-9 w-9 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center">
               <i className="fas fa-bolt text-white text-lg"></i>
             </div>
             <span className="text-xl font-bold text-gradient">VoltGo</span>
-          </a>
+          </div>
         </Link>
         
         {/* Search Bar */}
@@ -56,24 +56,24 @@ export default function Header({ onSearch }: { onSearch?: (query: string) => voi
         {/* Nav Items */}
         <nav className="flex items-center space-x-6">
           <Link href="/">
-            <a className={`text-gray-700 hover:text-primary font-medium ${location === "/" ? "text-primary" : ""}`}>
+            <div className={`text-gray-700 hover:text-primary font-medium cursor-pointer ${location === "/" ? "text-primary" : ""}`}>
               Mapa
-            </a>
+            </div>
           </Link>
           <Link href="/favorites">
-            <a className={`text-gray-700 hover:text-primary font-medium ${location === "/favorites" ? "text-primary" : ""}`}>
+            <div className={`text-gray-700 hover:text-primary font-medium cursor-pointer ${location === "/favorites" ? "text-primary" : ""}`}>
               Favoritos
-            </a>
+            </div>
           </Link>
           <Link href="/promotions">
-            <a className={`text-gray-700 hover:text-primary font-medium ${location === "/promotions" ? "text-primary" : ""}`}>
+            <div className={`text-gray-700 hover:text-primary font-medium cursor-pointer ${location === "/promotions" ? "text-primary" : ""}`}>
               Promoções
-            </a>
+            </div>
           </Link>
           <Link href="/profile">
-            <a className={`text-gray-700 hover:text-primary font-medium ${location === "/profile" ? "text-primary" : ""}`}>
+            <div className={`text-gray-700 hover:text-primary font-medium cursor-pointer ${location === "/profile" ? "text-primary" : ""}`}>
               Conta
-            </a>
+            </div>
           </Link>
           <div className="relative">
             <Button variant="ghost" size="icon" className="rounded-full">
