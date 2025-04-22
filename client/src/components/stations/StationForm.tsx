@@ -374,7 +374,11 @@ export default function StationForm() {
                           type="number"
                           step="0.01"
                           className="pl-10"
-                          {...field}
+                          value={field.value || ''} 
+                          onChange={(e) => {
+                            const value = e.target.value === '' ? null : Number(e.target.value);
+                            field.onChange(value);
+                          }}
                         />
                       </FormControl>
                     </div>
