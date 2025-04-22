@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, forwardRef, useImperativeHandle } from "react";
 import L from "leaflet";
 import { Station } from "@/types";
 import { createStationIcon } from "@/lib/mapHelpers";
@@ -10,11 +10,36 @@ interface VoltMapProps {
   className?: string;
 }
 
-export default function VoltMap({ stations, onStationClick, selectedStation, className = '' }: VoltMapProps) {
+export interface VoltMapRef {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  setView: (center: [number, number], zoom: number) => void;
+}
+
+const VoltMap = forwardRef<VoltMapRef, VoltMapProps>(({ stations, onStationClick, selectedStation, className = '' }, ref) => {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [key: number]: L.Marker }>({});
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  
+  // Expose methods to parent component
+  useImperativeHandle(ref, () => ({
+    zoomIn: () => {
+      if (mapRef.current) {
+        mapRef.current.zoomIn();
+      }
+    },
+    zoomOut: () => {
+      if (mapRef.current) {
+        mapRef.current.zoomOut();
+      }
+    },
+    setView: (center: [number, number], zoom: number) => {
+      if (mapRef.current) {
+        mapRef.current.setView(center, zoom);
+      }
+    }
+  }));
 
   // Initialize map
   useEffect(() => {
@@ -130,4 +155,6 @@ export default function VoltMap({ stations, onStationClick, selectedStation, cla
       <div ref={mapContainerRef} className="map-container" />
     </div>
   );
-}
+});
+
+export default VoltMap;

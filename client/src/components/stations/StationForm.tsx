@@ -133,12 +133,21 @@ export default function StationForm() {
         const endDate = new Date();
         endDate.setMonth(endDate.getMonth() + 3); // Set promotion to last 3 months
         
-        await apiRequest("POST", `/api/stations/${station.id}/promotions`, {
-          description: data.promotion,
-          pointsValue: 100, // Default points value
-          startDate,
-          endDate,
-        });
+        try {
+          await apiRequest("POST", `/api/stations/${station.id}/promotions`, {
+            description: data.promotion,
+            pointsValue: 100, // Default points value
+            startDate: startDate.toISOString(),
+            endDate: endDate.toISOString(),
+            stationId: station.id
+          });
+        } catch (promotionError) {
+          console.error("Erro ao criar promoção:", promotionError);
+          toast({
+            title: "Eletroposto cadastrado com sucesso!",
+            description: "Seu eletroposto foi cadastrado, mas houve um erro ao adicionar a promoção.",
+          });
+        }
       }
       
       queryClient.invalidateQueries({ queryKey: ["/api/stations"] });
