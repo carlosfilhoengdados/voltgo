@@ -19,6 +19,7 @@ export interface VoltMapRef {
 const VoltMap = forwardRef<VoltMapRef, VoltMapProps>(({ stations, onStationClick, selectedStation, className = '' }, ref) => {
   const mapRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [key: number]: L.Marker }>({});
+  const stationsRef = useRef<{ [key: number]: Station }>({});
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   
@@ -111,7 +112,7 @@ const VoltMap = forwardRef<VoltMapRef, VoltMapProps>(({ stations, onStationClick
     Object.values(markersRef.current).forEach(marker => marker.remove());
     markersRef.current = {};
 
-    // Add new markers
+    // Add new markers and keep reference to stations
     stations.forEach(station => {
       const marker = L.marker([station.lat, station.lng], {
         icon: createStationIcon(station.status)
@@ -128,22 +129,26 @@ const VoltMap = forwardRef<VoltMapRef, VoltMapProps>(({ stations, onStationClick
       });
 
       markersRef.current[station.id] = marker;
+      stationsRef.current[station.id] = station;
     });
   }, [stations, mapRef.current]);
 
   // Center map on selected station
   useEffect(() => {
-    if (!mapRef.current || !selectedStation) return;
+    if (!mapRef.current) return;
+    
+    // Reset all markers to non-selected state first
+    Object.values(markersRef.current).forEach(marker => {
+      const station = marker.options.station as Station;
+      marker.setIcon(createStationIcon(station.status, false));
+    });
+    
+    if (!selectedStation) return;
 
     // Center the map on the selected station
     mapRef.current.setView([selectedStation.lat, selectedStation.lng], 15);
     
     // Highlight the selected marker
-    Object.values(markersRef.current).forEach(marker => {
-      const icon = marker.getIcon();
-      marker.setIcon(icon);
-    });
-    
     if (markersRef.current[selectedStation.id]) {
       const marker = markersRef.current[selectedStation.id];
       marker.setIcon(createStationIcon(selectedStation.status, true));

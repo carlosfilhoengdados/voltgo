@@ -119,9 +119,6 @@ export default function StationForm() {
       const stationData: Partial<InsertStation> = {
         ...data,
         pricePerKwh: data.isFree ? null : data.pricePerKwh,
-        lat: data.lat,
-        lng: data.lng,
-        power: data.power,
       };
       
       const response = await apiRequest("POST", "/api/stations", stationData);
