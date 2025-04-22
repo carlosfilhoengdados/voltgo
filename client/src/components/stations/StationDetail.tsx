@@ -121,115 +121,135 @@ export default function StationDetail({ station, onClose }: StationDetailProps) 
   };
 
   return (
-    <div className="bg-white rounded-xl p-5 shadow-lg border border-gray-200">
+    <div className="bg-white rounded-xl p-5 shadow-xl border-0">
       <div className="flex justify-between items-start">
         <div>
-          <h2 className="text-xl font-semibold text-gray-900">{station.name}</h2>
-          <p className="text-gray-600 mt-1">{station.address} - {station.city}</p>
+          <div className="flex items-center">
+            <span className={`inline-block w-3 h-3 rounded-full mr-2 ${
+              station.status === 'available' ? 'bg-green-500' : 
+              station.status === 'busy' ? 'bg-yellow-500' : 'bg-red-500'
+            }`}></span>
+            <h2 className="text-xl font-semibold text-gray-900">{station.name}</h2>
+          </div>
+          <p className="text-gray-600 mt-1 text-sm">{station.address} - {station.city}</p>
+          
+          {/* Google Maps style status pill */}
+          <div className="mt-2 inline-block">
+            <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+              station.status === 'available' ? 'bg-green-100 text-green-800' : 
+              station.status === 'busy' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
+            }`}>
+              {station.status === 'available' ? 'Disponível' : 
+               station.status === 'busy' ? 'Em uso' : 'Fora de serviço'}
+            </span>
+          </div>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex space-x-2">
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full h-9 w-9 hover:bg-gray-100"
             onClick={toggleFavorite}
           >
-            <Heart className="h-5 w-5" fill={isFavorite ? "currentColor" : "none"} />
+            <Heart className="h-5 w-5" fill={isFavorite ? "#EA4335" : "none"} stroke={isFavorite ? "#EA4335" : "currentColor"} />
           </Button>
           
           <Button
-            variant="outline"
+            variant="ghost" 
             size="icon"
-            className="rounded-full"
+            className="rounded-full h-9 w-9 hover:bg-gray-100"
             onClick={shareStation}
           >
             <Share2 className="h-5 w-5" />
           </Button>
           
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
-            className="rounded-full"
+            className="rounded-full h-9 w-9 hover:bg-gray-100"
             onClick={getDirections}
           >
-            <Navigation className="h-5 w-5" />
+            <Navigation className="h-5 w-5 text-blue-500" />
           </Button>
         </div>
       </div>
       
-      <div className="grid grid-cols-3 gap-4 mt-5">
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-sm text-gray-500 mb-1">Tipo de carregador</p>
-          <div className="flex items-center">
-            <i className="fas fa-plug text-primary mr-2"></i>
-            <p className="font-medium">{station.connectorTypes.join("/")}</p>
-          </div>
+      {/* Google Maps style info chips */}
+      <div className="flex flex-wrap gap-2 mt-4">
+        <div className="inline-flex items-center px-3 py-1 bg-gray-100 rounded-full text-sm">
+          <i className="fas fa-plug text-gray-700 mr-2"></i>
+          <span>{station.connectorTypes.join("/")}</span>
         </div>
         
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-sm text-gray-500 mb-1">Preço</p>
-          <div className="flex items-center">
-            <i className="fas fa-dollar-sign text-primary mr-2"></i>
-            <p className="font-medium">
-              {station.isFree 
-                ? "Gratuito" 
-                : `R$ ${station.pricePerKwh?.toFixed(2)}/kWh`}
-            </p>
-          </div>
+        <div className="inline-flex items-center px-3 py-1 bg-gray-100 rounded-full text-sm">
+          <i className="fas fa-bolt text-gray-700 mr-2"></i>
+          <span>{station.power} kW {station.power >= 50 ? "(Rápido)" : ""}</span>
         </div>
         
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-sm text-gray-500 mb-1">Potência</p>
-          <div className="flex items-center">
-            <i className="fas fa-bolt text-primary mr-2"></i>
-            <p className="font-medium">
-              {station.power} kW {station.power >= 50 ? "(Rápido)" : ""}
-            </p>
-          </div>
+        <div className="inline-flex items-center px-3 py-1 bg-gray-100 rounded-full text-sm">
+          <i className={`fas fa-${station.isFree ? 'check-circle text-green-500' : 'dollar-sign text-gray-700'} mr-2`}></i>
+          <span>{station.isFree ? "Gratuito" : `R$ ${station.pricePerKwh?.toFixed(2)}/kWh`}</span>
         </div>
       </div>
       
-      <div className="mt-5 grid grid-cols-2 gap-4">
+      {/* Google Maps style details */}
+      <div className="mt-5 flex flex-col space-y-4">
         <div>
-          <h3 className="font-medium text-gray-900 mb-2">Detalhes</h3>
-          <ul className="space-y-2">
-            <li className="flex items-center text-sm text-gray-600">
-              <i className="fas fa-clock text-gray-400 mr-2 w-5"></i>
-              <span>{station.openingHours}</span>
-            </li>
-            
+          <div className="flex items-center text-sm mb-2">
+            <i className="fas fa-clock text-gray-500 mr-2"></i>
+            <span className="font-medium text-gray-800">{station.openingHours}</span>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
             {station.hasFreeParking && (
-              <li className="flex items-center text-sm text-gray-600">
-                <i className="fas fa-car text-gray-400 mr-2 w-5"></i>
+              <div className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-800">
+                <i className="fas fa-car mr-1"></i>
                 <span>Estacionamento gratuito</span>
-              </li>
+              </div>
             )}
             
             {station.hasWifi && (
-              <li className="flex items-center text-sm text-gray-600">
-                <i className="fas fa-wifi text-gray-400 mr-2 w-5"></i>
-                <span>Wi-Fi gratuito</span>
-              </li>
+              <div className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-800">
+                <i className="fas fa-wifi mr-1"></i>
+                <span>Wi-Fi</span>
+              </div>
             )}
             
             {station.hasRestaurant && (
-              <li className="flex items-center text-sm text-gray-600">
-                <i className="fas fa-utensils text-gray-400 mr-2 w-5"></i>
-                <span>Restaurante no local</span>
-              </li>
+              <div className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-800">
+                <i className="fas fa-utensils mr-1"></i>
+                <span>Restaurante</span>
+              </div>
             )}
             
             {station.hasWaitingArea && (
-              <li className="flex items-center text-sm text-gray-600">
-                <i className="fas fa-couch text-gray-400 mr-2 w-5"></i>
+              <div className="inline-flex items-center px-2 py-1 rounded-md text-xs bg-blue-50 text-blue-800">
+                <i className="fas fa-couch mr-1"></i>
                 <span>Área de espera</span>
-              </li>
+              </div>
             )}
-          </ul>
+          </div>
         </div>
         
-        <div>
-          <h3 className="font-medium text-gray-900 mb-2">Avaliações</h3>
+        {/* Google Maps style reviews section */}
+        <div className="bg-gray-50 px-4 py-3 rounded-md">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className="font-medium text-gray-900">Avaliações</h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-sm text-blue-600 hover:bg-blue-50 p-0"
+              onClick={() => {
+                toast({
+                  title: "Funcionalidade em desenvolvimento",
+                  description: "Ver todas as avaliações estará disponível em breve"
+                });
+              }}
+            >
+              Ver todas
+            </Button>
+          </div>
+          
           {reviews.length > 0 ? (
             <>
               <div className="flex items-center mb-2">
@@ -254,23 +274,14 @@ export default function StationDetail({ station, onClose }: StationDetailProps) 
         </div>
       </div>
       
-      <div className="mt-5 border-t border-gray-200 pt-4 flex justify-between">
+      {/* Google Maps style action button */}
+      <div className="mt-5 pt-2 flex justify-center">
         <Button
-          variant="ghost"
-          className="text-primary"
-          onClick={() => {
-            // In a real app, you would navigate to a reviews page
-            toast({
-              title: "Funcionalidade em desenvolvimento",
-              description: "Ver todas as avaliações estará disponível em breve"
-            });
-          }}
-        >
-          Ver todas as avaliações
-        </Button>
-        
-        <Button
-          className="bg-gradient-to-r from-primary to-secondary hover:from-primary-600 hover:to-secondary-600 text-white"
+          className={`w-full py-2 font-medium rounded-full ${
+            station.status === 'available' 
+              ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+              : 'bg-gray-200 text-gray-600 cursor-not-allowed'
+          }`}
           onClick={startCharging}
           disabled={station.status !== "available"}
         >
