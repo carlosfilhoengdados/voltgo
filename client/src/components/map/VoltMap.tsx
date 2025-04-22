@@ -138,9 +138,11 @@ const VoltMap = forwardRef<VoltMapRef, VoltMapProps>(({ stations, onStationClick
     if (!mapRef.current) return;
     
     // Reset all markers to non-selected state first
-    Object.values(markersRef.current).forEach(marker => {
-      const station = marker.options.station as Station;
-      marker.setIcon(createStationIcon(station.status, false));
+    Object.entries(markersRef.current).forEach(([stationId, marker]) => {
+      const station = stationsRef.current[parseInt(stationId)];
+      if (station) {
+        marker.setIcon(createStationIcon(station.status, false));
+      }
     });
     
     if (!selectedStation) return;
